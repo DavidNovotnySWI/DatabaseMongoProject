@@ -32,6 +32,32 @@ namespace WebApplication2.Controllers
             return View();
         }
         [HttpGet]
+        public async Task<IActionResult> Detail(string Id)
+        {
+            try
+            {
+
+                // Serializace objektu do formátu JSON
+                var requestDataJson = JsonConvert.SerializeObject(Id);
+                var content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student/" + Id).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseData = response.Content.ReadAsStringAsync().Result;
+                    var user = JsonConvert.DeserializeObject<Student>(responseData);
+                    return View(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = ex.Message;
+                return View();
+            }
+            return View();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             

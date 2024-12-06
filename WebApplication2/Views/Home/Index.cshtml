@@ -1,10 +1,17 @@
 ﻿@using WebApplication1.Models
 @model List<Student>
+<style>
+    tr:hover {
+        cursor: pointer;
+        background-color: #f0f0f0;
+    }
+</style>
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <h1>@ViewData["Title"]</h1>
+
 
 <a asp-action="Create"><button class="btn btn-success">Create</button></a>
 
@@ -19,14 +26,9 @@
     <tbody>
         @foreach (var student in Model)
         {
-            <tr>
+            <tr onclick="window.location.href='@Url.Action("Detail", new { Id = student.Id })'">
                 <td>@student.Id</td>
                 <td>@student.FirstName</td>
-            
-                <td>
-                    <a asp-action="Edit" asp-route-Id="@student.Id"><button class="btn btn-success">Edit</button></a>
-                    <a asp-action="Delete" asp-route-Id="@student.Id"><button class="btn btn-danger">Delete</button> </a>
-                </td>
             </tr>
         }
 

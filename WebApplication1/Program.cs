@@ -1,6 +1,7 @@
 using WebApplication1.Service;
 using WebApplication1.Controllers;
 using WebApplication1.Models;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.Configure<StudentDatabaseSettings>(
     builder.Configuration.GetSection("StudentDatabase"));
 
 builder.Services.AddSingleton<StudentService>();
+builder.Services.AddSingleton<BookService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(
@@ -33,28 +35,17 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-var summaries = new[]
+// **Inicializace textového indexu**
+using (var scope = app.Services.CreateScope())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var settings = builder.Configuration.GetSection("StudentDatabase").Get<StudentDatabaseSettings>();
+    var mongoClient = new MongoClient(settings.ConnectionString);
+    var database = mongoClient.GetDatabase(settings.DatabaseName);
+    var booksCollection = database.GetCollection<Book>(settings.BooksCollectionName);
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    // Vytvoøení textového indexu
+    var indexKeys = Builders<Book>.IndexKeys.Text(b => b.Title).Text(b => b.Description);
+    await booksCollection.Indexes.CreateOneAsync(new CreateIndexModel<Book>(indexKeys));
+}
 
 app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

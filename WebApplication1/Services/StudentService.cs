@@ -7,6 +7,7 @@ namespace WebApplication1.Service
     public class StudentService
     {
         private readonly IMongoCollection<Student> studentCollection;
+        private readonly IMongoCollection<Book> booksCollection;
 
         public StudentService(IOptions<StudentDatabaseSettings> studentDbSettings) 
         {
@@ -18,6 +19,11 @@ namespace WebApplication1.Service
 
             studentCollection = mongoDatabase.GetCollection<Student>(
                 studentDbSettings.Value.StudentsCollectionName);
+
+            booksCollection = mongoDatabase.GetCollection<Book>(
+                studentDbSettings.Value.BooksCollectionName);
+
+
         }
 
         public async Task<List<Student>> GetAsync() =>
