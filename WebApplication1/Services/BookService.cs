@@ -81,6 +81,30 @@ namespace WebApplication1.Service
             return await booksCollection.Find(combinedFilter).ToListAsync();
         }
 
+        public async Task<Student> GetStudentByBookIdAsync(string bookId)
+        {
+            // Najdeme knihu podle ID
+            var book = await booksCollection.Find(x => x.Id == bookId).FirstOrDefaultAsync();
+
+            if (book == null)
+            {
+                return null; // Kniha nenalezena
+            }
+
+            // Najdeme autora knihy (studenta) na základě AuthorId
+            var student = await studentCollection.Find(x => x.Id == book.AuthorId).FirstOrDefaultAsync();
+
+            if (student == null)
+            {
+                return null; // Student nenalezen
+            }
+
+            // Volitelně: Přidáme knihu do seznamu knih studenta
+            student.Books.Add(book);
+
+            return student;
+        }
+
     }
 
 }

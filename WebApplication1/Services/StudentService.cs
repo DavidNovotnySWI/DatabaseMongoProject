@@ -54,24 +54,6 @@ namespace WebApplication1.Service
         public async Task<List<Student>> GetOlderThanAsync(int age) =>
               await studentCollection.Find(student => student.Age > age).ToListAsync();
 
-        public async Task<Student> GetStudentWithBooksAsync(string studentId)
-        {
-            // Najdeme studenta podle ID
-            var student = await studentCollection.Find(x => x.Id == studentId).FirstOrDefaultAsync();
-
-            if (student == null)
-            {
-                return null; // Student nenalezen
-            }
-
-            // Najdeme všechny knihy napsané tímto studentem
-            var books = await booksCollection.Find(x => x.AuthorId == studentId).ToListAsync();
-
-            // Přiřadíme knihy ke studentovi
-            student.Books = books;
-
-            return student;
-        }
     }
 
 }

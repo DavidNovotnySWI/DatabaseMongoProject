@@ -22,12 +22,12 @@ namespace WebApplication2.Controllers
 
         public async Task<IActionResult> IndexAsync()
         {
-            HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student").Result;
+            HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Book").Result;
             if (response.IsSuccessStatusCode)
             {
                 var responseData = await response.Content.ReadAsStringAsync();
-                var users = JsonConvert.DeserializeObject<List<Student>>(responseData);
-                return View(users);
+                var books = JsonConvert.DeserializeObject<List<Book>>(responseData);
+                return View(books);
             }
             return View();
         }
@@ -40,7 +40,7 @@ namespace WebApplication2.Controllers
                 // Serializace objektu do formátu JSON
                 var requestDataJson = JsonConvert.SerializeObject(Id);
                 var content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student/students-with-book?id=" + Id).Result;
+                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Book/book-with-student?id=" + Id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {

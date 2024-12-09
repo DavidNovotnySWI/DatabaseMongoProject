@@ -125,19 +125,7 @@ namespace WebApplication1.Controllers
             return Ok(students);
         }
 
-
-        [HttpGet("students-with-book")]
-        public async Task<IActionResult> GetStudentWithBooks(string id)
-        {
-            var student = await studentService.GetStudentWithBooksAsync(id);
-
-            if (student == null)
-            {
-                return NotFound("Student not found.");
-            }
-
-            return Ok(student);
-        }
+      
     }
 
 }

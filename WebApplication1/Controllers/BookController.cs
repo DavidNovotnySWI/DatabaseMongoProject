@@ -67,5 +67,18 @@ namespace WebApplication1.Controllers
         public async Task AddMultiple(List<Book> books) =>
             await bookService.AddMultipleAsync(books);
 
+
+        [HttpGet("book-with-student")]
+        public async Task<IActionResult> GetStudentWithBooks(string id)
+        {
+            var student = await bookService.GetStudentByBookIdAsync(id);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            return Ok(student);
+        }
     }
 }
