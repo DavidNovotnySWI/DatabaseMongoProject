@@ -1,0 +1,71 @@
+﻿@using WebApplication1.Models
+@model Book
+
+@{
+    ViewData["Title"] = "Create Book";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <p>
+            <h4>Create Book</h4>
+        </p>
+
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="CreateBook" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+					<div class="form-group">
+						<label asp-for="Title" class="control-label"></label>
+						<input asp-for="Title" class="form-control" />
+						<span asp-validation-for="Title" class="text-danger"></span>
+					</div>
+
+                    <div class="form-group">
+						<label asp-for="Genre" class="control-label"></label>
+						<input asp-for="Genre" class="form-control" />
+						<span asp-validation-for="Genre" class="text-danger"></span>
+                    </div>
+
+                    
+                    <div class="form-group">
+						<label asp-for="Pages" class="control-label"></label>
+						<input asp-for="Pages" class="form-control" />
+						<span asp-validation-for="Pages" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PublisheDate" class="control-label"></label>
+                        <input asp-for="PublisheDate" class="form-control" />
+                        <span asp-validation-for="PublisheDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Pages" class="control-label"></label>
+                        <input asp-for="Pages" class="form-control" />
+                        <span asp-validation-for="Pages" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
+                        <input class="btn btn-outline-success float-right" type="submit" value="Save" />
+                        <a asp-controller="Home" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

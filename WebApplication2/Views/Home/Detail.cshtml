@@ -1,34 +1,63 @@
 ﻿@using WebApplication1.Models
-@model Student
-@{
-    ViewData["Title"] = "Detail Page";
+
+
+
+
+<div>
+    <h2>@Model.FirstName @Model.LastName</h2>
+        <div style="display:flex; justify-content:space-between">
+        <p><strong>Age:</strong> @Model.Age </p>
+        <p>
+            <a asp-action="Edit" asp-route-Id="@Model.Id"><button class="btn btn-success">Edit</button></a>
+            <a asp-action="Delete" asp-route-Id="@Model.Id"><button class="btn btn-danger">Delete</button> </a>
+        </p>
+        </div>
+
+
+</div>
+
+<h3>Books</h3>
+@if (Model.Books != null && Model.Books.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Genre</th>
+                <th>Pages</th>
+                <th>Price</th>
+                <th>Picture</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model.Books)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Genre</td>
+                    <td>@book.Pages</td>
+                    <td>@book.Price</td>
+					<td>
+						@if (book.Picture != null)
+						{
+							<img src="@book.Picture" />
+						}
+						else
+						{
+							<p>No Picture</p>
+						}
+                      </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <p>This student has not written any books yet.</p>
 }
 
-<h1>@ViewData["Title"]</h1>
-
 <button class="btn bg-white btn-outline-dark">
-    <a asp-action="Create">Create</a>
+    <a asp-action="BookCreate">ADD Book</a>
 </button>
-
-<table class="table" style="margin-top:50px">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Firstname</th>
-
-        </tr>
-    </thead>
-    <tbody>
-
-            <tr>
-                <td>@Model.Id</td>
-            <td>@Model.FirstName</td>
-            
-                <td>
-                <a asp-action="Edit" asp-route-Id="@Model.Id"><button class="btn btn-success">Edit</button></a>
-                <a asp-action="Delete" asp-route-Id="@Model.Id"><button class="btn btn-danger">Delete</button> </a>
-                </td>
-            </tr>
-
-    </tbody>
-</table>

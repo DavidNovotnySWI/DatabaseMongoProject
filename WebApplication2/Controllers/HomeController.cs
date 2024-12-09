@@ -40,7 +40,7 @@ namespace WebApplication2.Controllers
                 // Serializace objektu do formátu JSON
                 var requestDataJson = JsonConvert.SerializeObject(Id);
                 var content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student/" + Id).Result;
+                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student/students-with-book?id=" + Id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -85,6 +85,38 @@ namespace WebApplication2.Controllers
                     return RedirectToAction("Index");
                 }
 
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = ex.Message;
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BookCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BookCreate(Book book)
+        {
+            try
+            {
+                string requestDataJson = JsonConvert.SerializeObject(book);
+                StringContent content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = _httpClient.PostAsync("https://localhost:7222/" + $"api/Book/{book.Id}", content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["successMessage"] = "Book Created.";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["errorMessage"] = response.ReasonPhrase;
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
