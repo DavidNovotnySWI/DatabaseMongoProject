@@ -1,0 +1,51 @@
+﻿@model WebApplication1.Models.Book
+
+<div class="container mt-5">
+    <h2>Edit Book</h2>
+    <form asp-action="BookEdit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Title</label>
+            <input asp-for="Title" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Description</label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PublisheDate" class="form-label">PublisheDate</label>
+            <input asp-for="PublisheDate" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Genre" class="form-label">Genre</label>
+            <input asp-for="Genre" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Pages" class="form-label">Pages</label>
+            <input asp-for="Pages" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">Price</label>
+            <input asp-for="Price" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="AuthorId" class="form-label">Author ID</label>
+            <input asp-for="AuthorId" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Picture" class="form-label">Picture URL</label>
+            <input asp-for="Picture" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

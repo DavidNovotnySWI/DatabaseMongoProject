@@ -99,8 +99,11 @@ namespace WebApplication1.Service
                 return null; // Student nenalezen
             }
 
-            // Volitelně: Přidáme knihu do seznamu knih studenta
-            student.Books.Add(book);
+            // Najdeme všechny knihy tohoto autora (AuthorId)
+            var authorBooks = await booksCollection.Find(x => x.AuthorId == book.AuthorId).ToListAsync();
+
+            // Přidáme všechny nalezené knihy do seznamu knih studenta
+            student.Books = authorBooks;
 
             return student;
         }
