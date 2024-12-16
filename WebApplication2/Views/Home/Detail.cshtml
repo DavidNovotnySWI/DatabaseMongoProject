@@ -32,6 +32,7 @@
                 <th>Pages</th>
                 <th>Price</th>
                 <th>Picture</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -52,6 +53,10 @@
 							<p>No Picture</p>
 						}
                       </td>
+                    <td>
+                        <a asp-action="BookEdit" asp-route-id="@book.Id" class="btn btn-success btn-sm">Edit</a>
+                        <a asp-action="DeleteBook" asp-route-id="@book.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -63,4 +68,4 @@ else
     <p>This student has not written any books yet.</p>
 }
 
-<a asp-action="AddBookToAuthor" asp-route-Id="@Model.Id"><button class="btn btn-primary">+ ADD Book</button></a>
+<a asp-action="BookCreate"><button class="btn btn-primary">+ Add Book</button></a>

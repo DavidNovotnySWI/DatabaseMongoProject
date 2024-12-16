@@ -51,15 +51,16 @@ namespace WebApplication1.Controllers
             return Ok(books);
         }
 
+
         [HttpPost]
         public async Task Create(Book newBook) =>
             await bookService.CreateAsync(newBook);
 
-        [HttpPut]
+        [HttpPut("{id:length(24)}")]
         public async Task Update(string id, Book updatedBook) =>
             await bookService.UpdateAsync(id, updatedBook);
 
-        [HttpDelete]
+        [HttpDelete("{id:length(24)}")]
         public async Task Remove(string id) =>
             await bookService.RemoveAsync(id);
 

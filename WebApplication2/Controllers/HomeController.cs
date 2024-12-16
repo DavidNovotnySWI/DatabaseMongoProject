@@ -254,5 +254,75 @@ namespace WebApplication2.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> BookEdit(string id)
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync($"https://localhost:7222/api/Book/by-id?id={id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var book = JsonConvert.DeserializeObject<Book>(responseData);
+                    return View(book);
+                }
+                TempData["errorMessage"] = "Failed to load book details.";
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = ex.Message;
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BookEdit(Book book)
+        {
+            try
+            {
+
+                string requestDataJson = JsonConvert.SerializeObject(book);
+                StringContent content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = _httpClient.PutAsync("https://localhost:7222/" + $"api/Book/{book.Id}", content).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["successMessage"] = "Edit Success";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["errorMessage"] = response.ReasonPhrase;
+                    return RedirectToAction("Index");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = ex.Message;
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteBook(string Id)
+        {
+            var requestDataJson = JsonConvert.SerializeObject(Id);
+            var content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.DeleteAsync("https://localhost:7222/" + "api/Book/" + Id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["successMessage"] = "Book Deleted.";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["errorMessage"] = response.ReasonPhrase;
+                return RedirectToAction("Index");
+            }
+
+        }
     }
 }
