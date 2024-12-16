@@ -44,8 +44,10 @@ using (var scope = app.Services.CreateScope())
     var booksCollection = database.GetCollection<Book>(settings.BooksCollectionName);
 
     // **Inicialize search index**
-    var indexKeys = Builders<Book>.IndexKeys.Text(b => b.Title).Text(b => b.Description);
+    var indexKeys = Builders<Book>.IndexKeys.Text(b => b.Title).Text(b => b.Genre);
     await booksCollection.Indexes.CreateOneAsync(new CreateIndexModel<Book>(indexKeys));
+
+
 }
 
 app.Run();

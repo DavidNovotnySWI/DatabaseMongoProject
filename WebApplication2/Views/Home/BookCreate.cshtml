@@ -50,6 +50,11 @@
                         <span asp-validation-for="Book.Price" class="text-danger"></span>
                     </div>
 
+                    <div class="mb-3">
+                        <label asp-for="Book.Picture" class="form-label">Picture URL</label>
+                        <input asp-for="Book.Picture" class="form-control" />
+                    </div>
+
                     @if (ViewData["AuthorId"] != null)  
                     {
                         <!-- Skrytý input s AuthorId -->
