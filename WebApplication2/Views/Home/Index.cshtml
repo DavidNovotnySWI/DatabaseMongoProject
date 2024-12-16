@@ -7,28 +7,77 @@
 
 <h1>@ViewData["Title"]</h1>
 
+@if (TempData["errorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["errorMessage"]
+    </div>
+}
+
 <div class="mb-4">
     <a asp-action="BookCreate" class="btn btn-success">Create</a>
+    <!-- Tlačítko pro zobrazení/skrytí filtrů -->
+    <button type="button" id="toggleFilterBtn" class="btn btn-secondary">Show Filters</button>
 </div>
 
+<!-- Formulář pro filtrování, zpočátku skrytý -->
+<form method="post" asp-action="Index" id="filterForm" style="display:none;">
+    <div class="form-group">
+        <label for="description">Description (Query):</label>
+        <input type="text" class="form-control" id="description" name="description" placeholder="Enter query" />
+    </div>
+    <div class="form-group mt-2">
+        <label for="category">Category (Optional):</label>
+        <input type="text" class="form-control" id="category" name="category" placeholder="Enter category" />
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Filter</button>
+</form>
+
+<hr />
+
+<!-- Zobrazení knih -->
 <div class="row">
-    @foreach (var book in Model)
+    @if (Model != null && Model.Count > 0)
     {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100" style="cursor: pointer;" onclick="window.location.href='@Url.Action("Detail", new { Id = book.Id })'">
-                @if (!string.IsNullOrEmpty(book.Picture))
-                {
-                    <img class="card-img-top" src="@book.Picture" alt="@book.Title" style="height: 200px; object-fit: cover;">
-                }
-                else
-                {
-                    <img class="card-img-top" src="https://via.placeholder.com/150" alt="No image available" style="height: 200px; object-fit: cover;">
-                }
-                <div class="card-body">
-                    <h5 class="card-title">@book.Title</h5>
-                    <p class="card-text"><strong>Publish Date:</strong> @book.PublisheDate</p>
+        @foreach (var book in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100" style="cursor: pointer;" onclick="window.location.href='@Url.Action("Detail", new { Id = book.Id })'">
+                    @if (!string.IsNullOrEmpty(book.Picture))
+                    {
+                        <img class="card-img-top" src="@book.Picture" alt="@book.Title" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <img class="card-img-top" src="https://via.placeholder.com/150" alt="No image available" style="height: 200px; object-fit: cover;">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text"><strong>Publish Date:</strong> @book.PublisheDate</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>No books found.</p>
     }
 </div>
+
+@section Scripts {
+    <script>
+        const toggleBtn = document.getElementById('toggleFilterBtn');
+        const filterForm = document.getElementById('filterForm');
+
+        toggleBtn.addEventListener('click', () => {
+            if (filterForm.style.display === 'none') {
+                filterForm.style.display = 'block';
+                toggleBtn.textContent = 'Hide Filters';
+            } else {
+                filterForm.style.display = 'none';
+                toggleBtn.textContent = 'Show Filters';
+            }
+        });
+    </script>
+}

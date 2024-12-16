@@ -31,6 +31,40 @@ namespace WebApplication2.Controllers
             }
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(string description, string category)
+        {
+            string url;
+
+            // Pokud nevyplní žádný filtr, zobrazíme všechny knihy
+            if (string.IsNullOrEmpty(description) && string.IsNullOrEmpty(category))
+            {
+                url = "https://localhost:7222/api/Book";
+            }
+            else
+            {
+                // Jinak zavoláme search endpoint s filtry
+                url = $"https://localhost:7222/api/Book/search?query={Uri.EscapeDataString(description ?? "")}";
+                if (!string.IsNullOrEmpty(category))
+                {
+                    url += $"&category={Uri.EscapeDataString(category)}";
+                }
+            }
+
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["errorMessage"] = "Failed to load books.";
+                return View(new List<Book>());
+            }
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var books = JsonConvert.DeserializeObject<List<Book>>(responseData);
+            return View(books);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Detail(string Id)
         {
@@ -96,7 +130,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> BookCreate()
         {
-            return View();
+           return View();
         }
 
         [HttpPost]
@@ -197,6 +231,13 @@ namespace WebApplication2.Controllers
                 return RedirectToAction("Index");
             }
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Filter()
+        {
+            
+            return View();
         }
 
 
