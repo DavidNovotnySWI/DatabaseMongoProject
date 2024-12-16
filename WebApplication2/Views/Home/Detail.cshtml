@@ -1,6 +1,8 @@
 ﻿@using WebApplication1.Models
 
-
+@{
+    ViewData["Title"] = "Detail";
+}
 
 
 <div class="card shadow-sm mb-3">
@@ -27,7 +29,9 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Title</th>
+                <th class="col-md-2">Title</th>
+                <th class="col-md-4">Description</th>
+                <th>Publish date</th>
                 <th>Genre</th>
                 <th>Pages</th>
                 <th>Price</th>
@@ -38,30 +42,31 @@
         <tbody>
             @foreach (var book in Model.Books)
             {
-                <tr>
+                <tr style="vertical-align: middle">
                     <td>@book.Title</td>
+                    <td>@book.Description</td>
+                    <td>@book.PublisheDate</td>
                     <td>@book.Genre</td>
                     <td>@book.Pages</td>
-                    <td>@book.Price</td>
+                    <td>@book.Price Kč</td>
 					<td>
 						@if (book.Picture != null)
 						{
-							<img src="@book.Picture" />
+							<img style="height:180px" src="@book.Picture" />
 						}
 						else
 						{
 							<p>No Picture</p>
 						}
                       </td>
-                    <td>
-                        <a asp-action="BookEdit" asp-route-id="@book.Id" class="btn btn-success btn-sm">Edit</a>
-                        <a asp-action="DeleteBook" asp-route-id="@book.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <td style="text-align:center">
+                        <a asp-action="BookEdit" asp-route-id="@book.Id" class="btn btn-success btn-sm" style="margin-bottom: 5px; width: 80%">Edit</a>
+                        <a asp-action="DeleteBook" asp-route-id="@book.Id" class="btn btn-danger btn-sm" style="margin-top: 5px; width: 80%">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
 }
 else
 {
