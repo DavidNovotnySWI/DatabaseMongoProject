@@ -156,10 +156,16 @@ namespace WebApplication2.Controllers
                     viewmodel.Book = new Book();
                     
                     var students = JsonConvert.DeserializeObject<List<Student>>(responseData);
-                    viewmodel.Authors = new SelectList(students, "Id", "FirstName","LastName");
+                    var authorSelectList = students
+                       .Select(a => new {
+                           Id = a.Id,
+                           FullName = $"{a.LastName} {a.FirstName}"
+                       })
+                       .ToList();
+                    viewmodel.Authors = new SelectList(authorSelectList, "Id","FullName");
 
 
-
+                        
                     return View(viewmodel);
                 }
                 else
