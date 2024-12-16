@@ -35,7 +35,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-// **Inicializace textového indexu**
+// **Database setting**
 using (var scope = app.Services.CreateScope())
 {
     var settings = builder.Configuration.GetSection("StudentDatabase").Get<StudentDatabaseSettings>();
@@ -43,7 +43,7 @@ using (var scope = app.Services.CreateScope())
     var database = mongoClient.GetDatabase(settings.DatabaseName);
     var booksCollection = database.GetCollection<Book>(settings.BooksCollectionName);
 
-    // Vytvoøení textového indexu
+    // **Inicialize search index**
     var indexKeys = Builders<Book>.IndexKeys.Text(b => b.Title).Text(b => b.Description);
     await booksCollection.Indexes.CreateOneAsync(new CreateIndexModel<Book>(indexKeys));
 }
