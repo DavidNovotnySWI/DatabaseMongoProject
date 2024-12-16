@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using WebApplication1.Models;
+using System.Net;
 
 namespace WebApplication1.Service
 {
@@ -39,8 +40,20 @@ namespace WebApplication1.Service
         public async Task UpdateAsync(string id,Student updatedStudent) =>
             await studentCollection.ReplaceOneAsync(x => x.Id == id, updatedStudent);
 
-        public async Task RemoveAsync(string id) =>
-           await studentCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id)
+        {
+            // Najdeme všechny knihy tohoto autora (AuthorId)
+            var authorBooks = await booksCollection.Find(x => x.AuthorId == id).ToListAsync();
+
+            // Pokud má autor nějaké knihy, tak je odstraníme
+            if (authorBooks.Count > 0)
+            {
+                await booksCollection.DeleteManyAsync(x => x.AuthorId == id);
+            }
+
+            await studentCollection.DeleteOneAsync(x => x.Id == id);
+        }
+          
 
         public async Task AddMultipleAsync(List<Student> students) =>
             await studentCollection.InsertManyAsync(students);

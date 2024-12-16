@@ -10,6 +10,7 @@ namespace WebApplication1.Controllers
     public class StudentController : ControllerBase
     {
         private readonly StudentService studentService;
+        private readonly BookService BookService;
 
         public StudentController(StudentService studentService) =>
             this.studentService = studentService;
@@ -41,6 +42,7 @@ namespace WebApplication1.Controllers
             }
 
             await studentService.RemoveAsync(id);
+            
             return NoContent();
         }
 
