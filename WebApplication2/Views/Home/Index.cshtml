@@ -42,19 +42,20 @@
     {
         @foreach (var book in Model)
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-3">
                 <div class="card h-100" style="cursor: pointer;" onclick="window.location.href='@Url.Action("Detail", new { Id = book.Id })'">
                     @if (!string.IsNullOrEmpty(book.Picture))
                     {
-                        <img class="card-img-top" src="@book.Picture" alt="@book.Title" style="height: 200px; object-fit: cover;">
+                        <img class="card-img-top" src="@book.Picture" alt="@book.Title" style="height: 200px; object-fit: contain; padding: 1rem; border-bottom: 1px solid gainsboro">
                     }
                     else
                     {
-                        <img class="card-img-top" src="https://via.placeholder.com/150" alt="No image available" style="height: 200px; object-fit: cover;">
+                        <img class="card-img-top" src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No image available" style="height: 200px; object-fit: contain; padding: 1rem; border-bottom: 1px solid gainsboro">
                     }
-                    <div class="card-body">
+                    <div class="card-body" style="display:flex;align-content:space-between;flex-wrap:wrap">
                         <h5 class="card-title">@book.Title</h5>
-                        <p class="card-text"><strong>Publish Date:</strong> @book.PublisheDate</p>
+                        <p class="card-text" style="width:50%;height:fit-content;margin:0px"><strong>@book.PublisheDate</strong></p>
+                        <p class="card-text" style="width:50%;height:fit-content;margin:0px;text-align:right"><strong>@book.Genre</strong></p>
                     </div>
                 </div>
             </div>
