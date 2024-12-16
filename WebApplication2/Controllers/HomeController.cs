@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -125,6 +126,13 @@ namespace WebApplication2.Controllers
                 TempData["errorMessage"] = ex.Message;
                 return View();
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddBookToAuthor(string id)
+        {
+            @ViewData["AuthorId"] = id;
+            return View("BookCreate");
         }
 
         [HttpGet]

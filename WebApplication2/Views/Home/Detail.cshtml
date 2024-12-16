@@ -63,4 +63,4 @@ else
     <p>This student has not written any books yet.</p>
 }
 
-<a asp-action="BookCreate"><button class="btn btn-primary">+ ADD Book</button></a>
+<a asp-action="AddBookToAuthor" asp-route-Id="@Model.Id"><button class="btn btn-primary">+ ADD Book</button></a>
