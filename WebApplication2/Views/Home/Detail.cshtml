@@ -3,17 +3,22 @@
 
 
 
-<div>
-    <h2>@Model.FirstName @Model.LastName</h2>
-        <div style="display:flex; justify-content:space-between">
-        <p><strong>Age:</strong> @Model.Age </p>
-        <p>
-            <a asp-action="Edit" asp-route-Id="@Model.Id"><button class="btn btn-success">Edit</button></a>
-            <a asp-action="Delete" asp-route-Id="@Model.Id"><button class="btn btn-danger">Delete</button> </a>
-        </p>
+<div class="card shadow-sm mb-3">
+    <div class="card-header text-white bg-primary">
+        <h5 class="mb-0">Book Author Details</h5>
+    </div>
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div>
+                <p class="mb-2"><strong>Author:</strong> @Model.FirstName @Model.LastName</p>
+                <p class="mb-0"><strong>Age:</strong> @Model.Age</p>
+            </div>
+            <div class="d-flex flex-column">
+                <a asp-action="Edit" asp-route-Id="@Model.Id" class="btn btn-success btn-sm mb-2">Edit</a>
+                <a asp-action="Delete" asp-route-Id="@Model.Id" class="btn btn-danger btn-sm">Delete</a>
+            </div>
         </div>
-
-
+    </div>
 </div>
 
 <h3>Books</h3>
@@ -58,6 +63,4 @@ else
     <p>This student has not written any books yet.</p>
 }
 
-<button class="btn bg-white btn-outline-dark">
-    <a asp-action="BookCreate">ADD Book</a>
-</button>
+<a asp-action="BookCreate"><button class="btn btn-primary">+ ADD Book</button></a>
