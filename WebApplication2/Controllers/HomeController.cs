@@ -1,4 +1,6 @@
+using ClientApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -132,23 +134,55 @@ namespace WebApplication2.Controllers
         public async Task<IActionResult> AddBookToAuthor(string id)
         {
             @ViewData["AuthorId"] = id;
-            return View("BookCreate");
+
+            var viewmodel = new BookCreateViewModel();
+            viewmodel.Authors = null;
+            viewmodel.Book = new Book();
+            viewmodel.Book.AuthorId = id;
+            return View("BookCreate", viewmodel);
         }
 
         [HttpGet]
         public async Task<IActionResult> BookCreate()
         {
-           return View();
+            try
+            {
+                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseData = response.Content.ReadAsStringAsync().Result;
+
+                    var viewmodel = new BookCreateViewModel();
+                    viewmodel.Book = new Book();
+                    
+                    var students = JsonConvert.DeserializeObject<List<Student>>(responseData);
+                    viewmodel.Authors = new SelectList(students, "Id", "FirstName","LastName");
+
+
+
+                    return View(viewmodel);
+                }
+                else
+                {
+                    TempData["errorMessage"] = response.ReasonPhrase;
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = ex.Message;
+                return View();
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> BookCreate(Book book)
+        public async Task<IActionResult> BookCreate(BookCreateViewModel viewModel)
         {
             try
             {
-                string requestDataJson = JsonConvert.SerializeObject(book);
+                string requestDataJson = JsonConvert.SerializeObject(viewModel.Book);
                 StringContent content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _httpClient.PostAsync("https://localhost:7222/" + $"api/Book/{book.Id}", content).Result;
+                HttpResponseMessage response = _httpClient.PostAsync("https://localhost:7222/" + $"api/Book/{viewModel.Book.Id}", content).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     TempData["successMessage"] = "Book Created.";

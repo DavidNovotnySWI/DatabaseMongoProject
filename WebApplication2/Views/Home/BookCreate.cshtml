@@ -1,5 +1,6 @@
-﻿@using WebApplication1.Models
-@model Book
+﻿@using ClientApp.Models
+@using WebApplication1.Models
+@model BookCreateViewModel
 
 @{
     ViewData["Title"] = "Create Book";
@@ -7,59 +8,64 @@
 
 <div class="row">
     <div class="col-md-6 offset-3">
-        <p>
-            <h4>Create Book</h4>
-        </p>
-
+        <h4>Create Book</h4>
         <div class="row">
             <div class="col-md-8 offset-2">
                 <form asp-action="BookCreate" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-					<div class="form-group">
-						<label asp-for="Title" class="control-label"></label>
-						<input asp-for="Title" class="form-control" />
-						<span asp-validation-for="Title" class="text-danger"></span>
-					</div>
-
                     <div class="form-group">
-						<label asp-for="Genre" class="control-label"></label>
-						<input asp-for="Genre" class="form-control" />
-						<span asp-validation-for="Genre" class="text-danger"></span>
-                    </div>
-
-                    
-                    <div class="form-group">
-						<label asp-for="Pages" class="control-label"></label>
-						<input asp-for="Pages" class="form-control" />
-						<span asp-validation-for="Pages" class="text-danger"></span>
+                        <label asp-for="Book.Title" class="control-label"></label>
+                        <input asp-for="Book.Title" class="form-control" />
+                        <span asp-validation-for="Book.Title" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="PublisheDate" class="control-label"></label>
-                        <input asp-for="PublisheDate" class="form-control" />
-                        <span asp-validation-for="PublisheDate" class="text-danger"></span>
+                        <label asp-for="Book.Genre" class="control-label"></label>
+                        <input asp-for="Book.Genre" class="form-control" />
+                        <span asp-validation-for="Book.Genre" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Description" class="control-label"></label>
-                        <input asp-for="Description" class="form-control" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <label asp-for="Book.Pages" class="control-label"></label>
+                        <input asp-for="Book.Pages" class="form-control" />
+                        <span asp-validation-for="Book.Pages" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Price" class="control-label"></label>
-                        <input asp-for="Price" class="form-control" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
+                        <label asp-for="Book.PublisheDate" class="control-label"></label>
+                        <input asp-for="Book.PublisheDate" class="form-control" />
+                        <span asp-validation-for="Book.PublisheDate" class="text-danger"></span>
                     </div>
-                    @if (ViewData["AuthorId"] != null){
+
+                    <div class="form-group">
+                        <label asp-for="Book.Description" class="control-label"></label>
+                        <input asp-for="Book.Description" class="form-control" />
+                        <span asp-validation-for="Book.Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Book.Price" class="control-label"></label>
+                        <input asp-for="Book.Price" class="form-control" />
+                        <span asp-validation-for="Book.Price" class="text-danger"></span>
+                    </div>
+
+                    @if (ViewData["AuthorId"] != null)  
+                    {
                         <!-- Skrytý input s AuthorId -->
-                        <input type="hidden" name="AuthorId" value="@ViewData["AuthorId"]" />
+                        <input type="hidden" name="Book.AuthorId" value="@ViewData["AuthorId"]" />
+                    }
+                    else
+                    {
+                        <!-- Dropdown pro výběr existujícího autora -->
+                        <div class="form-group">
+                            <label asp-for="Book.AuthorId" class="control-label"></label>
+                            <select asp-for="Book.AuthorId" asp-items="Model.Authors" class="form-control"></select>
+                            <span asp-validation-for="Book.AuthorId" class="text-danger"></span>
+                        </div>
                     }
 
-
-
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <input class="btn btn-outline-success float-right" type="submit" value="Save" />
                         <a asp-controller="Home" asp-action="Index">Cancel</a>
                     </div>
