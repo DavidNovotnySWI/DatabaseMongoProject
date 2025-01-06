@@ -1,10 +1,8 @@
 using ClientApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
 using WebApplication1.Models;
 using WebApplication2.Models;
@@ -36,18 +34,19 @@ namespace WebApplication2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string description, string category)
+        public async Task<IActionResult> Index(string? description = null, string? category = null)
         {
+            ViewData["description"] = description;
+            ViewData["category"] = category;
+
             string url;
 
-            // Pokud nevyplní žádný filtr, zobrazíme všechny knihy
             if (string.IsNullOrEmpty(description) && string.IsNullOrEmpty(category))
             {
                 url = "https://localhost:7222/api/Book";
             }
             else
             {
-                // Jinak zavoláme search endpoint s filtry
                 url = $"https://localhost:7222/api/Book/search?query={Uri.EscapeDataString(description ?? "")}";
                 if (!string.IsNullOrEmpty(category))
                 {
@@ -68,6 +67,7 @@ namespace WebApplication2.Controllers
             return View(books);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Detail(string Id)
         {
@@ -77,12 +77,12 @@ namespace WebApplication2.Controllers
                 // Serializace objektu do formátu JSON
                 var requestDataJson = JsonConvert.SerializeObject(Id);
                 var content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Book/book-with-student?id=" + Id).Result;
+                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Book/book-with-author?id=" + Id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseData = response.Content.ReadAsStringAsync().Result;
-                    var user = JsonConvert.DeserializeObject<Student>(responseData);
+                    var user = JsonConvert.DeserializeObject<Author>(responseData);
                     return View(user);
                 }
             }
@@ -97,19 +97,22 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Student model)
+        public async Task<IActionResult> Create(Author model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             try
             {
-
                 string requestDataJson = JsonConvert.SerializeObject(model);
                 StringContent content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _httpClient.PostAsync("https://localhost:7222/" + $"api/Student/{model.Id}", content).Result;
+                HttpResponseMessage response = _httpClient.PostAsync("https://localhost:7222/" + $"api/Author/{model.Id}", content).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -118,15 +121,15 @@ namespace WebApplication2.Controllers
                 }
                 else
                 {
-                    TempData["errorMessage"] = response.ReasonPhrase;
-                    return RedirectToAction("Index");
+                    TempData["errorMessage"] = "tereate the author.";
+                    return View(model);
                 }
 
             }
             catch (Exception ex)
             {
                 TempData["errorMessage"] = ex.Message;
-                return View();
+                return View(model);
             }
         }
 
@@ -147,25 +150,26 @@ namespace WebApplication2.Controllers
         {
             try
             {
-                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student").Result;
+                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Author").Result;
                 if (response.IsSuccessStatusCode)
                 {
                     var responseData = response.Content.ReadAsStringAsync().Result;
 
                     var viewmodel = new BookCreateViewModel();
                     viewmodel.Book = new Book();
-                    
-                    var students = JsonConvert.DeserializeObject<List<Student>>(responseData);
-                    var authorSelectList = students
-                       .Select(a => new {
+
+                    var authors = JsonConvert.DeserializeObject<List<Author>>(responseData);
+                    var authorSelectList = authors
+                       .Select(a => new
+                       {
                            Id = a.Id,
                            FullName = $"{a.LastName} {a.FirstName}"
                        })
                        .ToList();
-                    viewmodel.Authors = new SelectList(authorSelectList, "Id","FullName");
+                    viewmodel.Authors = new SelectList(authorSelectList, "Id", "FullName");
 
 
-                        
+
                     return View(viewmodel);
                 }
                 else
@@ -184,6 +188,33 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<IActionResult> BookCreate(BookCreateViewModel viewModel)
         {
+            // duplicitni try pro zobrazeni nabidky autoru i po refreshy a pri validaci (nepodarilo se mi vyresit lepe)
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7222/api/Author");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var authors = JsonConvert.DeserializeObject<List<Author>>(responseData);
+                    var authorSelectList = authors
+                        .Select(a => new
+                        {
+                            Id = a.Id,
+                            FullName = $"{a.LastName} {a.FirstName}"
+                        })
+                        .ToList();
+                    viewModel.Authors = new SelectList(authorSelectList, "Id", "FullName");
+                }
+                else
+                {
+                    TempData["errorMessage"] = "Failed to load authors.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = $"Error loading authors: {ex.Message}";
+            }
+
             try
             {
                 string requestDataJson = JsonConvert.SerializeObject(viewModel.Book);
@@ -196,8 +227,7 @@ namespace WebApplication2.Controllers
                 }
                 else
                 {
-                    TempData["errorMessage"] = response.ReasonPhrase;
-                    return RedirectToAction("Index");
+                    return View(viewModel);
                 }
             }
             catch (Exception ex)
@@ -215,12 +245,12 @@ namespace WebApplication2.Controllers
                 // Serializace objektu do formátu JSON
                 var requestDataJson = JsonConvert.SerializeObject(Id);
                 var content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Student/" + Id).Result;
+                HttpResponseMessage response = _httpClient.GetAsync("https://localhost:7222/" + "api/Author/" + Id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseData = response.Content.ReadAsStringAsync().Result;
-                    var user = JsonConvert.DeserializeObject<Student>(responseData);
+                    var user = JsonConvert.DeserializeObject<Author>(responseData);
                     return View(user);
                 }
             }
@@ -233,14 +263,14 @@ namespace WebApplication2.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(Student student)
+        public async Task<IActionResult> Edit(Author author)
         {
             try
-            {                  
+            {
 
-                string requestDataJson = JsonConvert.SerializeObject(student);
+                string requestDataJson = JsonConvert.SerializeObject(author);
                 StringContent content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _httpClient.PutAsync("https://localhost:7222/" + $"api/Student/{student.Id}", content).Result;
+                HttpResponseMessage response = _httpClient.PutAsync("https://localhost:7222/" + $"api/Author/{author.Id}", content).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -266,7 +296,7 @@ namespace WebApplication2.Controllers
         {
             var requestDataJson = JsonConvert.SerializeObject(Id);
             var content = new StringContent(requestDataJson, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await _httpClient.DeleteAsync("https://localhost:7222/" + "api/Student/" + Id);
+            HttpResponseMessage response = await _httpClient.DeleteAsync("https://localhost:7222/" + "api/Author/" + Id);
 
             if (response.IsSuccessStatusCode)
             {
@@ -284,7 +314,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> Filter()
         {
-            
+
             return View();
         }
 
@@ -319,6 +349,12 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<IActionResult> BookEdit(Book book)
         {
+            if (!ModelState.IsValid)
+            {
+                // Return the view with validation errors and the current book data
+                return View(book);
+            }
+
             try
             {
 
@@ -333,8 +369,8 @@ namespace WebApplication2.Controllers
                 }
                 else
                 {
-                    TempData["errorMessage"] = response.ReasonPhrase;
-                    return RedirectToAction("Index");
+                    TempData["errorMessage"] = "Failed to update the book.";
+                    return View(book);
                 }
 
             }

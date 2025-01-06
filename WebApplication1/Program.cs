@@ -5,10 +5,10 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<StudentDatabaseSettings>(
+builder.Services.Configure<AuthorDatabaseSettings>(
     builder.Configuration.GetSection("StudentDatabase"));
 
-builder.Services.AddSingleton<StudentService>();
+builder.Services.AddSingleton<AuthorService>();
 builder.Services.AddSingleton<BookService>();
 
 builder.Services.AddControllers()
@@ -38,7 +38,7 @@ app.MapControllers();
 // **Database setting**
 using (var scope = app.Services.CreateScope())
 {
-    var settings = builder.Configuration.GetSection("StudentDatabase").Get<StudentDatabaseSettings>();
+    var settings = builder.Configuration.GetSection("StudentDatabase").Get<AuthorDatabaseSettings>();
     var mongoClient = new MongoClient(settings.ConnectionString);
     var database = mongoClient.GetDatabase(settings.DatabaseName);
     var booksCollection = database.GetCollection<Book>(settings.BooksCollectionName);

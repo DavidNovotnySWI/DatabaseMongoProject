@@ -1,15 +1,15 @@
-﻿using MongoDB.Driver;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using WebApplication1.Models;
 
 namespace WebApplication1.Service
 {
     public class BookService
     {
-        private readonly IMongoCollection<Student> studentCollection;
+        private readonly IMongoCollection<Author> studentCollection;
         private readonly IMongoCollection<Book> booksCollection;
 
-        public BookService(IOptions<StudentDatabaseSettings> studentDbSettings) 
+        public BookService(IOptions<AuthorDatabaseSettings> studentDbSettings)
         {
             var mongoClient = new MongoClient(
                 studentDbSettings.Value.ConnectionString);
@@ -17,8 +17,8 @@ namespace WebApplication1.Service
             var mongoDatabase = mongoClient.GetDatabase(
                 studentDbSettings.Value.DatabaseName);
 
-            studentCollection = mongoDatabase.GetCollection<Student>(
-                studentDbSettings.Value.StudentsCollectionName);
+            studentCollection = mongoDatabase.GetCollection<Author>(
+                studentDbSettings.Value.AuthorsCollectionName);
 
             booksCollection = mongoDatabase.GetCollection<Book>(
                 studentDbSettings.Value.BooksCollectionName);
@@ -44,12 +44,12 @@ namespace WebApplication1.Service
         public async Task CreateAsync(Book newBook) =>
             await booksCollection.InsertOneAsync(newBook);
 
-       public async Task UpdateAsync(string id, Book updatedBook) =>
-            await booksCollection.ReplaceOneAsync(x => x.Id == id, updatedBook);
+        public async Task UpdateAsync(string id, Book updatedBook) =>
+             await booksCollection.ReplaceOneAsync(x => x.Id == id, updatedBook);
 
 
-       public async Task RemoveAsync(string id) =>
-           await booksCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string id) =>
+            await booksCollection.DeleteOneAsync(x => x.Id == id);
 
 
         public async Task AddMultipleAsync(List<Book> books) =>
@@ -81,7 +81,7 @@ namespace WebApplication1.Service
             return await booksCollection.Find(combinedFilter).ToListAsync();
         }
 
-        public async Task<Student> GetStudentByBookIdAsync(string bookId)
+        public async Task<Author> GetAuthorByBookIdAsync(string bookId)
         {
             // Najdeme knihu podle ID
             var book = await booksCollection.Find(x => x.Id == bookId).FirstOrDefaultAsync();

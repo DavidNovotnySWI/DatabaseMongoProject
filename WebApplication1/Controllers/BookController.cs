@@ -69,17 +69,17 @@ namespace WebApplication1.Controllers
             await bookService.AddMultipleAsync(books);
 
 
-        [HttpGet("book-with-student")]
-        public async Task<IActionResult> GetStudentWithBooks(string id)
+        [HttpGet("book-with-author")]
+        public async Task<IActionResult> GetAuthorWithBooks(string id)
         {
-            var student = await bookService.GetStudentByBookIdAsync(id);
+            var author = await bookService.GetAuthorByBookIdAsync(id);
 
-            if (student == null)
+            if (author == null)
             {
-                return NotFound("Student not found.");
+                return NotFound("Author not found.");
             }
 
-            return Ok(student);
+            return Ok(author);
         }
     }
 }

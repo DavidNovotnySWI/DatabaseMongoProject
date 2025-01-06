@@ -4,52 +4,72 @@
     ViewData["Title"] = "Edit Book";
 }
 
-<div class="container mt-5">
-    <h2>Edit Book</h2>
-    <form asp-action="BookEdit" method="post">
-        <input type="hidden" asp-for="Id" />
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header text-center bg-primary text-white">
+                <h4>Edit Book</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="BookEdit" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-        <div class="mb-3">
-            <label asp-for="Title" class="form-label">Title</label>
-            <input asp-for="Title" class="form-control" />
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Title" class="form-label">Title</label>
+                        <input asp-for="Title" class="form-control" placeholder="Enter book title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" placeholder="Enter book description" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="PublisheDate" class="form-label">Publish Year</label>
+                        <input asp-for="PublisheDate" type="number" class="form-control" placeholder="Enter publish year (e.g., 2025)" />
+                        <span asp-validation-for="PublisheDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Genre" class="form-label">Genre</label>
+                        <input asp-for="Genre" class="form-control" placeholder="Enter book genre" />
+                        <span asp-validation-for="Genre" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Pages" class="form-label">Pages</label>
+                        <input asp-for="Pages" class="form-control" placeholder="Number of pages" />
+                        <span asp-validation-for="Pages" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Price" class="form-label">Price (Kč)</label>
+                        <input asp-for="Price" type="number" step="0.01" class="form-control" placeholder="Enter price" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Picture" class="form-label">Picture URL</label>
+                        <input asp-for="Picture" class="form-control" placeholder="https://example.com/book-image.jpg" />
+                        <span asp-validation-for="Picture" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="AuthorId" class="form-label">Author ID</label>
+                        <input asp-for="AuthorId" class="form-control" />
+                        <span asp-validation-for="AuthorId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-success w-100">Save</button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary w-100 mt-2">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label">Description</label>
-            <input asp-for="Description" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="PublisheDate" class="form-label">PublisheDate</label>
-            <input asp-for="PublisheDate" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Genre" class="form-label">Genre</label>
-            <input asp-for="Genre" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Pages" class="form-label">Pages</label>
-            <input asp-for="Pages" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Price" class="form-label">Price</label>
-            <input asp-for="Price" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="AuthorId" class="form-label">Author ID</label>
-            <input asp-for="AuthorId" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Picture" class="form-label">Picture URL</label>
-            <input asp-for="Picture" class="form-control" />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+    </div>
 </div>
